@@ -57,7 +57,7 @@ export default function RecruiterDashboard() {
 
         if (jobsData) {
             // Fetch registration counts for these jobs
-            const jobIds = jobsData.map(j => j.id);
+            const jobIds = jobsData.map((j: any) => j.id);
             if (jobIds.length > 0) {
                 const { data: counts } = await supabase
                     .from('drive_registrations')

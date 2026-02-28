@@ -169,12 +169,12 @@ export default function JobCandidatesPage() {
 
     if (!job) return null;
 
-    const shortlisted = candidates.filter(c => c.avg_score >= job.min_score);
+    const shortlisted = candidates.filter((c: any) => c.avg_score >= job.min_score);
     const selectionRate = candidates.length > 0 ? Math.round((shortlisted.length / candidates.length) * 100) : 0;
 
     const handleApprove = async (regId: string, status: string) => {
         await supabase.from('drive_registrations').update({ status }).eq('id', regId);
-        setCandidates(prev => prev.map(c => c.reg_id === regId ? { ...c, status } : c));
+        setCandidates(prev => prev.map((c: any) => c.reg_id === regId ? { ...c, status } : c));
     };
 
     const handleBulkSchedule = async () => {
@@ -187,7 +187,7 @@ export default function JobCandidatesPage() {
             .update({ status: 'Approved', scheduled_time: bulkScheduleTime })
             .in('id', idsArray);
 
-        setCandidates(prev => prev.map(c => idsArray.includes(c.reg_id) ? { ...c, status: 'Approved', scheduled_time: bulkScheduleTime } : c));
+        setCandidates(prev => prev.map((c: any) => idsArray.includes(c.reg_id) ? { ...c, status: 'Approved', scheduled_time: bulkScheduleTime } : c));
 
         setSelectedRegIds(new Set());
         setBulkScheduleTime("");
@@ -196,7 +196,7 @@ export default function JobCandidatesPage() {
 
     const handleSchedule = async (regId: string, scheduledTime: string) => {
         await supabase.from('drive_registrations').update({ scheduled_time: scheduledTime }).eq('id', regId);
-        setCandidates(prev => prev.map(c => c.reg_id === regId ? { ...c, scheduled_time: scheduledTime } : c));
+        setCandidates(prev => prev.map((c: any) => c.reg_id === regId ? { ...c, scheduled_time: scheduledTime } : c));
     };
 
     return (

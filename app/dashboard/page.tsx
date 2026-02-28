@@ -45,24 +45,24 @@ export default function CandidateDashboard() {
     // Derive stats from real data
     const totalInterviews = interviews.length;
     const avgScore = interviews.length
-        ? Math.round(interviews.reduce((s, i) => s + (i.avg_score || 0), 0) / interviews.length * 10)
+        ? Math.round(interviews.reduce((s: number, i: any) => s + (i.avg_score || 0), 0) / interviews.length * 10)
         : 0;
     const bestScore = interviews.length
-        ? Math.max(...interviews.map(i => (i.avg_score || 0) * 10))
+        ? Math.max(...interviews.map((i: any) => (i.avg_score || 0) * 10))
         : 0;
-    const passedCount = interviews.filter(i => (i.avg_score || 0) >= 7).length;
+    const passedCount = interviews.filter((i: any) => (i.avg_score || 0) >= 7).length;
 
     // Skill DNA: extract unique keywords from all interview roles
     const skillDNA = Array.from(new Set(
-        interviews.flatMap(i =>
-            i.role.split(/[\s,/&]+/).filter(w => w.length > 2)
+        interviews.flatMap((i: any) =>
+            i.role.split(/[\s,/&]+/).filter((w: string) => w.length > 2)
         )
     )).slice(0, 20);
 
     const chartData = [...interviews]
         .slice(0, 5)
         .reverse()
-        .map((inv, idx) => ({
+        .map((inv: any, idx: number) => ({
             name: `Int ${idx + 1}`,
             score: (inv.avg_score || 0) * 10,
             role: inv.role.length > 15 ? inv.role.substring(0, 15) + "..." : inv.role

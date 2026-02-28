@@ -200,7 +200,7 @@ export default function PlacementDrivesPage() {
 
         const newStatus = !currentStatus;
         await supabase.from('placement_drives').update({ results_published: newStatus }).eq('id', driveId);
-        setDrives(prev => prev.map(d => d.id === driveId ? { ...d, results_published: newStatus } : d));
+        setDrives(prev => prev.map((d: any) => d.id === driveId ? { ...d, results_published: newStatus } : d));
     };
 
     useEffect(() => {
@@ -297,7 +297,7 @@ export default function PlacementDrivesPage() {
 
             {/* Drive Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {drives.map((drive, i) => (
+                {drives.map((drive: any, i: number) => (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
