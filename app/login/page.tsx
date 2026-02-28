@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { LogIn, Chrome, Loader2 } from "lucide-react";
 
-export const dynamic = 'force-dynamic';
-
-export default function LoginPage() {
+function LoginContent() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -120,6 +118,91 @@ export default function LoginPage() {
     }
 
     return (
+        <div className="bg-bg-secondary p-8 rounded-[2.5rem] border border-border-color shadow-2xl">
+            {/* Portal Switcher Tabs */}
+            <div className="flex bg-bg-primary rounded-2xl p-1 mb-8 border border-border-color/50">
+                <Link href="/login" className={`flex-1 text-center py-2.5 rounded-xl text-xs font-bold transition-all ${!portal ? "bg-accent-blue text-white shadow-md shadow-accent-blue/20" : "text-text-secondary hover:text-text-primary"}`}>Student</Link>
+                <Link href="/login?portal=recruiter" className={`flex-1 text-center py-2.5 rounded-xl text-xs font-bold transition-all ${portal === 'recruiter' ? "bg-accent-blue text-white shadow-md shadow-accent-blue/20" : "text-text-secondary hover:text-text-primary"}`}>HR / Recruiter</Link>
+                <Link href="/login?portal=tpo" className={`flex-1 text-center py-2.5 rounded-xl text-xs font-bold transition-all ${portal === 'tpo' ? "bg-accent-blue text-white shadow-md shadow-accent-blue/20" : "text-text-secondary hover:text-text-primary"}`}>TPO Login</Link>
+            </div>
+
+            <h1 className="text-2xl font-bold mb-2 font-sora text-center">
+                {portal === 'tpo' ? 'TPO Portal' : portal === 'recruiter' ? 'HR Portal' : 'Student Portal'}
+            </h1>
+            <p className="text-text-secondary text-sm text-center mb-8">Please enter your credentials to continue.</p>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                    <label className="block text-sm font-medium mb-1">Email Address</label>
+                    <input
+                        type="email"
+                        required
+                        className="w-full p-3 rounded-lg bg-bg-card border border-border-color focus:border-accent-blue outline-none transition-colors"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <div className="flex justify-between mb-1">
+                        <label className="block text-sm font-medium">Password</label>
+                        <button
+                            type="button"
+                            className="text-xs text-accent-blue hover:underline"
+                            onClick={() => supabase.auth.resetPasswordForEmail(email)}
+                        >
+                            Forgot Password?
+                        </button>
+                    </div>
+                    <input
+                        type="password"
+                        required
+                        className="w-full p-3 rounded-lg bg-bg-card border border-border-color focus:border-accent-blue outline-none transition-colors"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
+
+                {error && <p className="text-accent-red text-sm">{error}</p>}
+
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-2 bg-accent-blue hover:bg-blue-600 disabled:opacity-50 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                >
+                    {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                    {loading ? "Logging in..." : "Login"}
+                </button>
+            </form>
+
+            <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-border-color"></span>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-bg-secondary px-2 text-text-secondary">Or sign in with</span>
+                </div>
+            </div>
+
+            <button
+                onClick={handleGoogleLogin}
+                className="w-full flex items-center justify-center gap-3 bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+                <Chrome className="w-5 h-5" />
+                Google
+            </button>
+
+            <p className="mt-8 text-center text-text-secondary text-sm">
+                Don't have an account?{" "}
+                <Link href="/signup" className="text-accent-blue hover:underline">
+                    Create Account
+                </Link>
+            </p>
+        </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
         <div className="min-h-screen bg-bg-primary flex flex-col items-center justify-center p-6">
             <div className="max-w-md w-full">
                 <div className="flex justify-center mb-8">
@@ -131,86 +214,14 @@ export default function LoginPage() {
                     </div>
                 </div>
 
-                <div className="bg-bg-secondary p-8 rounded-[2.5rem] border border-border-color shadow-2xl">
-                    {/* Portal Switcher Tabs */}
-                    <div className="flex bg-bg-primary rounded-2xl p-1 mb-8 border border-border-color/50">
-                        <Link href="/login" className={`flex-1 text-center py-2.5 rounded-xl text-xs font-bold transition-all ${!portal ? "bg-accent-blue text-white shadow-md shadow-accent-blue/20" : "text-text-secondary hover:text-text-primary"}`}>Student</Link>
-                        <Link href="/login?portal=recruiter" className={`flex-1 text-center py-2.5 rounded-xl text-xs font-bold transition-all ${portal === 'recruiter' ? "bg-accent-blue text-white shadow-md shadow-accent-blue/20" : "text-text-secondary hover:text-text-primary"}`}>HR / Recruiter</Link>
-                        <Link href="/login?portal=tpo" className={`flex-1 text-center py-2.5 rounded-xl text-xs font-bold transition-all ${portal === 'tpo' ? "bg-accent-blue text-white shadow-md shadow-accent-blue/20" : "text-text-secondary hover:text-text-primary"}`}>TPO Login</Link>
+                <Suspense fallback={
+                    <div className="bg-bg-secondary p-8 rounded-[2.5rem] border border-border-color shadow-2xl flex flex-col items-center justify-center min-h-[400px]">
+                        <Loader2 className="w-8 h-8 animate-spin text-accent-blue mb-4" />
+                        <p className="text-text-secondary text-sm">Loading login portal...</p>
                     </div>
-
-                    <h1 className="text-2xl font-bold mb-2 font-sora text-center">
-                        {portal === 'tpo' ? 'TPO Portal' : portal === 'recruiter' ? 'HR Portal' : 'Student Portal'}
-                    </h1>
-                    <p className="text-text-secondary text-sm text-center mb-8">Please enter your credentials to continue.</p>
-
-                    <form onSubmit={handleLogin} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Email Address</label>
-                            <input
-                                type="email"
-                                required
-                                className="w-full p-3 rounded-lg bg-bg-card border border-border-color focus:border-accent-blue outline-none transition-colors"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <div className="flex justify-between mb-1">
-                                <label className="block text-sm font-medium">Password</label>
-                                <button
-                                    type="button"
-                                    className="text-xs text-accent-blue hover:underline"
-                                    onClick={() => supabase.auth.resetPasswordForEmail(email)}
-                                >
-                                    Forgot Password?
-                                </button>
-                            </div>
-                            <input
-                                type="password"
-                                required
-                                className="w-full p-3 rounded-lg bg-bg-card border border-border-color focus:border-accent-blue outline-none transition-colors"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </div>
-
-                        {error && <p className="text-accent-red text-sm">{error}</p>}
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full flex items-center justify-center gap-2 bg-accent-blue hover:bg-blue-600 disabled:opacity-50 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98]"
-                        >
-                            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                            {loading ? "Logging in..." : "Login"}
-                        </button>
-                    </form>
-
-                    <div className="relative my-6">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t border-border-color"></span>
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-bg-secondary px-2 text-text-secondary">Or sign in with</span>
-                        </div>
-                    </div>
-
-                    <button
-                        onClick={handleGoogleLogin}
-                        className="w-full flex items-center justify-center gap-3 bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-100 transition-colors"
-                    >
-                        <Chrome className="w-5 h-5" />
-                        Google
-                    </button>
-
-                    <p className="mt-8 text-center text-text-secondary text-sm">
-                        Don't have an account?{" "}
-                        <Link href="/signup" className="text-accent-blue hover:underline">
-                            Create Account
-                        </Link>
-                    </p>
-                </div>
+                }>
+                    <LoginContent />
+                </Suspense>
             </div>
         </div>
     );
