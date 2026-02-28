@@ -162,7 +162,7 @@ export default function RecruiterJobsPage() {
                 setJobs(data);
 
                 // Fetch applicant counts for all jobs
-                const jobIds = data.map(j => j.id);
+                const jobIds = data.map((j: any) => j.id);
                 if (jobIds.length > 0) {
                     const { data: counts } = await supabase
                         .from('drive_registrations')
@@ -170,7 +170,7 @@ export default function RecruiterJobsPage() {
                         .in('job_id', jobIds);
 
                     const countMap: Record<string, number> = {};
-                    counts?.forEach(c => {
+                    counts?.forEach((c: any) => {
                         countMap[c.job_id] = (countMap[c.job_id] || 0) + 1;
                     });
                     setJobApplicantCounts(countMap);
