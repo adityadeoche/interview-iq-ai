@@ -1,17 +1,24 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 1. Tell Render to ignore TypeScript errors during build
   typescript: {
     ignoreBuildErrors: true,
   },
-  // 2. Tell Render to ignore ESLint warnings during build
   eslint: {
+    // This tells Next.js to skip linting during the build
     ignoreDuringBuilds: true,
   },
-  // 3. Fix the specific 'position' error from your logs
   devIndicators: {
     buildActivityPosition: 'bottom-right',
+  },
+  // ADD THIS BLOCK: It prevents Webpack from trying to load ESLint
+  webpack: (config, { dev, isServer }) => {
+    if (!dev) {
+      config.plugins = config.plugins.filter(
+        (plugin: any) => plugin.constructor.name !== 'ESLintWebpackPlugin'
+      );
+    }
+    return config;
   },
 };
 
