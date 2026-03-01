@@ -1,7 +1,11 @@
-const config = {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
-};
+import { FlatCompat } from "@eslint/eslintrc";
 
-export default config;
+const compat = new FlatCompat({
+  baseDirectory: import.meta.dirname,
+});
+
+const eslintConfig = [
+  ...compat.extends("next"), // Basic next.js rules
+];
+
+export default eslintConfig;
