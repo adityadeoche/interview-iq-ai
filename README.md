@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="https://github.com/adityadeoche/interview-iq-ai/releases/download/v1.0.0/Screenshot.2026-03-01.at.12.26.11.PM.png" alt="InterviewIQ AI Landing Page" width="100%" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+</div>
+
 # 🤖 InterviewIQ AI — The Future of Placements
 
 [![Next.js](https://img.shields.io/badge/Next.js-15+-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
